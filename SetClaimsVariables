@@ -1,0 +1,121 @@
+steps:
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Function-AppServiceMatrix')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Function.appServiceNames]$(claims.batchScheduler.webAppName)"
+    name: SetAppServiceList
+    displayName: Set App Service List
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Function')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Function.archivePattern]claims.batchscheduler.$(build.configVersion).*"
+      "##vso[task.setvariable variable=Function.extractFolder]$(build.configVersion)/claims.batchscheduler"
+      "##vso[task.setvariable variable=Function.packageFolder]BatchScheduler"
+      "##vso[task.setvariable variable=Function.packageId]claims.batchscheduler"
+      "##vso[task.setvariable variable=Function.pacakgeVersion]$(build.configVersion)"
+    name: SetFunctionDeploymentVariables
+    displayName: Set Function Deployment Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Wcf-AppServiceMatrix')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Wcf.appServiceNames]$(claims.wcf.webAppName)"
+    name: SetAppServiceList
+    displayName: Set App Service List
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Wcf')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Wcf.archivePattern]claims.wcf.$(build.configVersion).*"
+      "##vso[task.setvariable variable=Wcf.extractFolder]$(build.configVersion)/claims.wcf"
+      "##vso[task.setvariable variable=Wcf.applicationPath]afs.claims.wcf"
+      "##vso[task.setvariable variable=Wcf.packageFolder]AFS.Claims.WCF"
+      "##vso[task.setvariable variable=Wcf.packageId]claims.wcf"
+      "##vso[task.setvariable variable=Wcf.pacakgeVersion]$(build.configVersion)"
+    name: SetAppServiceDeploymentVariables
+    displayName: Set App Service Deployment Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Website-AppServiceMatrix')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Website.appServiceNames]$(claims.web.webAppName)"
+    name: SetAppServiceList
+    displayName: Set App Service List
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Website')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Website.archivePattern]claims.web.$(build.configVersion).*"
+      "##vso[task.setvariable variable=Website.extractFolder]$(build.configVersion)/claims.web"
+      "##vso[task.setvariable variable=Website.applicationPath]afs.claims"
+      "##vso[task.setvariable variable=Website.packageFolder]AFS.Claims"
+      "##vso[task.setvariable variable=Website.packageId]claims.web"
+      "##vso[task.setvariable variable=Website.pacakgeVersion]$(build.configVersion)"
+    name: SetAppServiceDeploymentVariables
+    displayName: Set App Service Deployment Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Wcf-ImportImage')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Wcf.targetContainerRegistry]$(environment.containerRegistry)"
+      "##vso[task.setvariable variable=Wcf.sourceImage]$(environment.sourceContainerRegistry).azurecr.io/claims-wcf:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Wcf.targetImage]claims-wcf:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Wcf.sourceContainerRegistry.SPUserName]$(environment.sourceContainerRegistry.servicePrincipalApplicationId)"
+      "##vso[task.setvariable variable=Wcf.sourceContainerRegistry.SPPassword]$(environment.sourceContainerRegistry.servicePrincipalClientAuth)"
+    name: SetImportImageVariables
+    displayName: Set Import Image Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Wcf-DeploymentMatrix')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Wcf.aksApps]claims-api-$(claims.blueGreenEnv)"
+      "##vso[task.setvariable variable=Wcf.aksAppsForBlueGreen]claims-api-{deploymentSlot}"
+      "##vso[task.setvariable variable=Wcf.workloadName]claims-api"
+    name: SetAKSAppDeploymentList
+    displayName: Set AKS App Deployment List
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Wcf')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Wcf.containerRegistry]$(environment.containerRegistry).azurecr.io"
+      "##vso[task.setvariable variable=Wcf.image]$(environment.containerRegistry).azurecr.io/claims-wcf:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Wcf.workloadName]claims-api"
+    name: SetAKSDeploymentVariables
+    displayName: Set AKS Deployment Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Website-ImportImage')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Website.targetContainerRegistry]$(environment.containerRegistry)"
+      "##vso[task.setvariable variable=Website.sourceImage]$(environment.sourceContainerRegistry).azurecr.io/claims-web:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Website.targetImage]claims-web:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Website.sourceContainerRegistry.SPUserName]$(environment.sourceContainerRegistry.servicePrincipalApplicationId)"
+      "##vso[task.setvariable variable=Website.sourceContainerRegistry.SPPassword]$(environment.sourceContainerRegistry.servicePrincipalClientAuth)"
+    name: SetImportImageVariables
+    displayName: Set Import Image Variables
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Website-DeploymentMatrix')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Website.aksApps]claims-web-$(claims.blueGreenEnv)"
+      "##vso[task.setvariable variable=Website.aksAppsForBlueGreen]claims-web-{deploymentSlot}"
+      "##vso[task.setvariable variable=Website.workloadName]claims-web"
+    name: SetAKSAppDeploymentList
+    displayName: Set AKS App Deployment List
+
+- ${{ if and(eq(parameters.appDeploymentTarget, 'AKS'), eq(parameters.key, 'Website')) }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=Website.containerRegistry]$(environment.containerRegistry).azurecr.io"
+      "##vso[task.setvariable variable=Website.image]$(environment.containerRegistry).azurecr.io/claims-web:v$(build.configVersion)"
+      "##vso[task.setvariable variable=Website.workloadName]claims-web"
+    name: SetAKSDeploymentVariables
+    displayName: Set AKS Deployment Variables
+
+- ${{ if eq(parameters.key, 'APIManagementMatrix') }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=APIM.instanceNames]$(environment.apiManagement.serviceNames)"
+    name: SetAPIManagementList
+    displayName: Set API Management List
+
+- ${{ if eq(parameters.key, 'APIM') }}:
+  - pwsh: |
+      "##vso[task.setvariable variable=APIM.archivePattern]claims.apispecification.$(build.configVersion).*"
+      "##vso[task.setvariable variable=APIM.extractFolder]$(build.configVersion)/claims.apispecification"
+      "##vso[task.setvariable variable=APIM.apiId]$(claims.apiManagement.name)"
+      "##vso[task.setvariable variable=APIM.apiPath]claims"
+      "##vso[task.setvariable variable=APIM.name]Claims API"
+      "##vso[task.setvariable variable=APIM.description]API for Claims operations."
+      "##vso[task.setvariable variable=APIM.packageId]claims.apispecification"
+      "##vso[task.setvariable variable=APIM.pacakgeVersion]$(build.configVersion)"
+    name: SetAPIMDeploymentVariables
+    displayName: Set APIM Deployment Variables
