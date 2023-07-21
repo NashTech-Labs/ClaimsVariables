@@ -1,3 +1,14 @@
+parameters:
+- name: appDeploymentTarget
+  type: string
+
+- name: key
+  type: string
+
+- name: enableClaimsVariables
+  type: boolean
+  default: true
+  
 steps:
 - ${{ if and(eq(parameters.appDeploymentTarget, 'AppService'), eq(parameters.key, 'Function-AppServiceMatrix')) }}:
   - pwsh: |
