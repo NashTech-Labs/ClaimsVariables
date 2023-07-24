@@ -29,7 +29,7 @@ You can directly call a particular template as per the requirement. for example:
   repositories:
     - repository: Template
       type: github
-      name: your_username/terraform.validate.ado
+      name: your_username/ClaimsVariables
       ref: <respective branch name>
       endpoint: 'githubServiceConnectioNname'
 
