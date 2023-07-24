@@ -37,7 +37,7 @@ You can directly call a particular template as per the requirement. for example:
 
   steps:  
    # passing the parameters
-  - template: templates/claimsVariables.yml@Template
+  - template: templates/setClaimsVariables.yml@Template
       parameters:
         appDeploymentTarget: ${{parameters.appDeploymentTarget}}
         key: ${{parameters.key}}
