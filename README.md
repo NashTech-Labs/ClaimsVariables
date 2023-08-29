@@ -11,7 +11,7 @@ Paramaters:
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | appDeploymentTarget | string | | | Required | |
 | key | string | | | Required | |
-| enableClaimsVariables | boolean | 'true' | 'true'/'false' | Required | |
+
 
 
 These parameters provide multiple use case options for the setvariables templates pipeline, enable/disable flags for the utilization of different templates as per the requirements.
